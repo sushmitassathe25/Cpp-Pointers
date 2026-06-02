@@ -1,5 +1,20 @@
 # Unique Pointers
 
+
+# Unique Pointers
+
+As name suggests it is used for strict **Exclusive Ownership** i.e only one pointer can manage the resource. Copying is strictly forbidden by the compiler, though ownership can be transferred/moved.
+
+std::unique_ptr is the simplest and most efficient smart pointer in modern C++. When the piece of heap memory is wrapped inside the unique_ptr, then that pointer becomes the sole owner of that memory and no other pointer can share or copy it.
+
+A unique_ptr can only be moved with std::move. This means that the ownership of the memory resources is transferred to another unique_ptr and the original unique_ptr is no longer owns it.
+
+unique_ptr ties the lifetime of heap allocation directly to the lifetime of stack variable using the RAII. If your functiom exists early because of return statement or thrown exception, C++ compiler guarantees that the unique_ptr destructor will run preventing any chances of a memory leak.   
+
+
+
+
+
 ## What is a Unique Pointer?
 
 A **Unique Pointer** (`std::unique_ptr`) is a smart pointer that maintains exclusive ownership of a dynamically allocated object. It ensures that only one unique pointer can own a resource at any given time. When the unique pointer goes out of scope, it automatically deallocates the memory.
