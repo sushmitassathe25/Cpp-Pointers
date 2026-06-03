@@ -1,29 +1,12 @@
 # Unique Pointers
 
-
-# Unique Pointers
-
-As name suggests it is used for strict **Exclusive Ownership** i.e only one pointer can manage the resource. Copying is strictly forbidden by the compiler, though ownership can be transferred/moved.
-
-std::unique_ptr is the simplest and most efficient smart pointer in modern C++. When the piece of heap memory is wrapped inside the unique_ptr, then that pointer becomes the sole owner of that memory and no other pointer can share or copy it.
-
-A unique_ptr can only be moved with std::move. This means that the ownership of the memory resources is transferred to another unique_ptr and the original unique_ptr is no longer owns it.
-
-unique_ptr ties the lifetime of heap allocation directly to the lifetime of stack variable using the RAII. If your functiom exists early because of return statement or thrown exception, C++ compiler guarantees that the unique_ptr destructor will run preventing any chances of a memory leak.   
-
-
-
-
-
-## What is a Unique Pointer?
-
 A **Unique Pointer** (`std::unique_ptr`) is a smart pointer that maintains exclusive ownership of a dynamically allocated object. It ensures that only one unique pointer can own a resource at any given time. When the unique pointer goes out of scope, it automatically deallocates the memory.
 
 **Key Characteristics:**
 - **Exclusive Ownership**: Only one unique_ptr can own the object at a time
-- **Move Semantics**: Ownership can be transferred using move semantics
-- **RAII Principle**: Resource is freed when the pointer goes out of scope
 - **No Copying**: Copying is explicitly deleted to maintain uniqueness
+- **Move Semantics**: Ownership can be transferred using move semantics (`std::move`)
+- **RAII Principle**: Resource is freed when the pointer goes out of scope
 - **Zero-Overhead**: No runtime performance cost compared to raw pointers
 
 ---
@@ -57,8 +40,6 @@ graph LR
         E["unique_ptr B"] -->|cannot own| D
     end
     
-    style Valid fill:#90EE90
-    style Invalid fill:#FFB6C6
 ```
 
 ---
@@ -70,9 +51,6 @@ graph LR
     A["Step 1: Before Move<br/>unique_ptr A<br/>owns Object"] -->|std::move| B["Step 2: Move Operation<br/>Ownership transfers"]
     B --> C["Step 3: After Move<br/>unique_ptr B<br/>owns Object<br/>A = nullptr"]
     
-    style A fill:#87CEEB
-    style B fill:#FFD700
-    style C fill:#90EE90
 ```
 
 ---
@@ -95,8 +73,6 @@ graph TD
         B4["Automatic memory<br/>management"]
     end
     
-    style Raw fill:#FFB6C6
-    style Unique fill:#90EE90
 ```
 
 ---
@@ -206,11 +182,6 @@ graph TD
     A --> E["Factory functions<br/>returning new objects"]
     A --> F["RAII pattern<br/>is important"]
     
-    style B fill:#90EE90
-    style C fill:#90EE90
-    style D fill:#90EE90
-    style E fill:#90EE90
-    style F fill:#90EE90
 ```
 
 ---
@@ -231,8 +202,6 @@ graph LR
         B3["Automatic deletion<br/>✅ Guaranteed!"]
     end
     
-    style Before fill:#FFB6C6
-    style After fill:#90EE90
 ```
 
 ---
@@ -279,10 +248,6 @@ graph LR
     C -->|owns| F["Object: Bob"]
     D -->|owns| G["Object: Charlie"]
     
-    style A fill:#87CEEB
-    style E fill:#90EE90
-    style F fill:#90EE90
-    style G fill:#90EE90
 ```
 
 ---
