@@ -1,3 +1,7 @@
+# My Own version of unique_ptr implementation
+
+Here’s an example implementation of a simple unique pointer class in C++:
+
 ```cpp
 #include <iostream>
 
@@ -119,9 +123,15 @@ int main() {
 
 ---
 
+Above class is a simplified version of the std::unique_ptr class in the C++ standard library. It implements the basic functionality of a unique pointer, including memory management, move semantics, and pointer access operations. The class has a templated type parameter T that specifies the type of the object being managed by the pointer.
 
+The copy constructor and copy assignment operator are explicitly deleted to prevent the class from being copied, as unique pointers are designed to be unique and non-sharable. The move constructor and move assignment operator are implemented to allow the transfer of ownership of the pointer to another unique pointer.
 
+`explicit :` As the constructor uses the **explicit** keyword, which prevents dangerous, accidental implicit conversion.
 
+`= delete :` (to copy constructor and copy assignment operator) explicitly instruct the compiler to block copying at compile time.
+
+`noexcept :` (on move operations i.e move constructor and move assignment operator) This optimization flag informs the standard library containers (like vector) that it is completely safe to move your smart pointer around during container reallocations without throwing runtime exceptions.
 
 
 
