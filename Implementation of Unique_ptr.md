@@ -125,7 +125,7 @@ int main() {
 
 Above class is a simplified version of the std::unique_ptr class in the C++ standard library. It implements the basic functionality of a unique pointer, including memory management, move semantics, and pointer access operations. The class has a templated type parameter T that specifies the type of the object being managed by the pointer.
 
-The copy constructor and copy assignment operator are explicitly deleted to prevent the class from being copied, as unique pointers are designed to be unique and non-sharable. The move constructor and move assignment operator are implemented to allow the transfer of ownership of the pointer to another unique pointer.
+The copy constructor and copy assignment operator are explicitly deleted to prevent the class from being copied, as unique pointers are designed to be unique and non-sharable. The move constructor and move assignment operator are implemented to allow the transfer of ownership of the pointer to another unique pointer. And overloaded dereference and arrow operators. Along with the set of member functions for accessing and manipulating the pointer.
 
 `explicit :` As the constructor uses the **explicit** keyword, which prevents dangerous, accidental implicit conversion.
 
