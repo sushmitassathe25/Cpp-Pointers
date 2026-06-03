@@ -1,1 +1,116 @@
+#include <iostream>
 
+using namespace std;
+
+template <typename T>
+class UniquePtr {
+    private:
+        T* ptr_; // pointer member to hold the resource
+
+    public:
+        //constructor
+        explicit UniquePtr(T* ptr = nullptr) : ptr_(ptr) {}
+
+        // destructor
+        ~UniquePtr() {
+            cout<<"Destructor called, releasing resource..."<<endl;
+            delete ptr_; // release the resource
+        }
+
+        // move constructor
+        UniquePtr(UniquePtr&& other) noexcept : ptr_(other.ptr_) {
+            cout<<"Move constructor called, transferring ownership..."<<endl;
+            other.ptr_ = nullptr; // transfer ownership
+        }
+
+        // move assignment operator
+        UniquePtr& operator=(UniquePtr&& other) noexcept {  
+            cout<<"Move assignment operator called, transferring ownership..."<<endl;
+            if (this != &other) { // check for self-assignment
+                delete ptr_; // release current resource
+                ptr_ = other.ptr_; // transfer ownership
+                other.ptr_ = nullptr; // transfer ownership
+            }
+            return *this;
+        }
+
+        // delete copy constructor and copy assignment operator to prevent copying
+        UniquePtr(const UniquePtr&) = delete;   
+        UniquePtr& operator=(const UniquePtr&) = delete; 
+
+        //operator overloads
+        // overload dereference operator
+        T& operator*() const {
+            return *ptr_;
+        }
+
+        // overload arrow operator
+        T* operator->() const {
+            return ptr_;
+        }
+        
+        //Member fucntions
+        //get the raw pointer
+        T* get() const {
+            return ptr_;
+        }
+
+        //release ownership of the resource and return the raw pointer
+        T* release() {  
+            cout<<"Releasing ownership of the resource..."<<endl;      
+            T* temp = ptr_;
+            ptr_ = nullptr; // release ownership
+            return temp; // return the raw pointer
+        }
+
+        //reset the UniquePtr to manage a new resource 
+        void reset(T* ptr = nullptr) {
+            cout<<"Resetting UniquePtr to manage a new resource..."<<endl;
+            delete ptr_; // release current resource
+            ptr_ = ptr; // manage new resource
+        }
+
+        // check if the UniquePtr is managing a resource
+        bool isNull() const {
+            return ptr_ == nullptr;
+        }
+
+        //move semantics for function parameters
+        void transferOwnership(UniquePtr&& other) { 
+            cout<<"Transferring ownership from another UniquePtr..."<<endl;
+            if (this != &other) { // check for self-assignment
+                delete ptr_; // release current resource
+                ptr_ = other.ptr_; // transfer ownership
+                other.ptr_ = nullptr; // transfer ownership
+            }
+        }
+};
+
+int main() {
+    // create a UniquePtr managing an integer
+    UniquePtr<int> ptr1(new int(42)); 
+    cout<<"Value in ptr1: "<<*ptr1<<endl; 
+
+    // transfer ownership to ptr2 using move semantics
+    UniquePtr<int> ptr2 = std::move(ptr1); 
+    cout<<"Value in ptr2 after move: "<<*ptr2<<endl; 
+
+    if (ptr1.isNull()) {
+        cout<<"ptr1 is now null after move."<<endl;
+    }
+
+    // reset ptr2 to manage a new integer
+    ptr2.reset(new int(100)); 
+    cout<<"Value in ptr2 after reset: "<<*ptr2<<endl; // dereference to get the new value
+
+    // create an empty UniquePtr and transfer ownership from ptr2
+    UniquePtr<int> ptr3; 
+
+    ptr3.transferOwnership(std::move(ptr2)); // transfer ownership from ptr2 to ptr3
+    cout<<"Value in ptr3 after transferring ownership: "<<*ptr3<<endl; 
+
+    if (ptr2.isNull()) {
+        cout<<"ptr2 is now null after transferring ownership."<<endl;
+    }
+    return 0;
+}
