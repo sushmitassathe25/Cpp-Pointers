@@ -114,8 +114,16 @@ int main() {
         cout<<"ptr2 is now null after transferring ownership."<<endl;
     }
     return 0;
+}
 ```
 
 ---
-}
-```
+
+
+
+
+
+
+
+
+
