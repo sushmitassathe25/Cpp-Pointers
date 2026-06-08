@@ -1,6 +1,6 @@
 # Shared Pointers
 
-A **Shared Pointer** (`std::shared_ptr`) is a smart pointer that allows multiple pointers to own the same dynamically allocated object. It uses reference counting to track how many pointers share ownership and automatically deletes the object when the last owner is destroyed.
+A **Shared Pointer** (`std::shared_ptr`) is a smart pointer that allows multiple pointers to own the same dynamically allocated object. It uses reference counting to track how many pointers share ownership.
 
 **Key Characteristics:**
 - **Shared Ownership**: Multiple shared_ptr can own the same object
@@ -239,7 +239,7 @@ graph LR
     
     H["favoriteStudent"] -->|owns| E
     
-    Note over B,H: Alice has Ref Count: 2
+    I["Alice: Ref Count = 2"]
 ```
 
 ---
