@@ -1,6 +1,6 @@
 # Shared Pointers
 
-A **Shared Pointer** (`std::shared_ptr`) is a smart pointer that allows multiple pointers to own the same dynamically allocated object. It uses reference counting to track how many pointers share ownership and automatically deletes the resource when the reference count reaches zero.
+A **Shared Pointer** (`std::shared_ptr`) is a smart pointer that allows multiple pointers to own the same dynamically allocated object. It uses reference counting to track how many pointers share ownership and automatically deletes the object when the last owner is destroyed.
 
 **Key Characteristics:**
 - **Shared Ownership**: Multiple shared_ptr can own the same object
@@ -173,33 +173,32 @@ graph TD
 
 ## Reference Count Tracking Example
 
-```mermaid
-sequenceDiagram
-    participant Main
-    participant ptr1
-    participant ptr2
-    participant ptr3
-    participant Heap
-    
-    Main->>ptr1: Create shared_ptr
-    ptr1->>Heap: Allocate Object
-    Note over ptr1: Ref Count: 1
-    
-    Main->>ptr2: ptr2 = ptr1
-    Note over ptr1,ptr2: Ref Count: 2
-    
-    Main->>ptr3: ptr3 = ptr1
-    Note over ptr1,ptr2,ptr3: Ref Count: 3
-    
-    Main->>ptr2: ptr2 goes out of scope
-    Note over ptr1,ptr3: Ref Count: 2
-    
-    Main->>ptr3: ptr3.reset()
-    Note over ptr1: Ref Count: 1
-    
-    Main->>ptr1: ptr1 goes out of scope
-    Note over Heap: Object deleted, Ref Count: 0
-```
+### Step-by-Step Walkthrough
+
+**Step 1: Create shared_ptr ptr1**
+- Object allocated on heap
+- Ref Count: 1
+
+**Step 2: Create ptr2 = ptr1**
+- Copy of shared pointer
+- Ref Count: 2 (both ptr1 and ptr2 own the object)
+
+**Step 3: Create ptr3 = ptr1**
+- Another copy
+- Ref Count: 3 (ptr1, ptr2, and ptr3 all own the object)
+
+**Step 4: ptr2 goes out of scope**
+- ptr2 is destroyed
+- Ref Count: 2 (ptr1 and ptr3 remain)
+
+**Step 5: ptr3.reset()**
+- ptr3 releases ownership
+- Ref Count: 1 (only ptr1 remains)
+
+**Step 6: ptr1 goes out of scope**
+- ptr1 is destroyed
+- Ref Count: 0
+- **Object is deleted from heap**
 
 ---
 
@@ -373,7 +372,7 @@ graph TD
 
 ## Avoiding Circular References
 
-Circular references can cause memory leaks with shared pointers. Consider using `std::weak_ptr` for back-references in parent-child relationships. See the **Weak Pointers** documentation for detailed information on handling circular references.
+Circular references can cause memory leaks with shared pointers. Consider using `std::weak_ptr` for back-references in parent-child relationships. This prevents two shared_ptr objects from holding references to each other indefinitely.
 
 ---
 
