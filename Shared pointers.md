@@ -376,6 +376,10 @@ Circular references can cause memory leaks with shared pointers. Consider using 
 
 ---
 
+Shared pointers are not thread-safe by default. If multiple threads access the same shared pointer simultaneously, there is a risk of a data race or other concurrency-related issues.
+
+Shared pointers are not suitable for managing certain types of resources, such as file handles or network connections, which require specialized management.
+
 ## Summary
 
 Shared pointers provide:
