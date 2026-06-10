@@ -97,3 +97,9 @@ int main()
 ```
 
 ---
+
+Above class is a simplified version of the std::shared_ptr class in the C++ standard library. Here the SharedPtr class template takes a type parameter T representing the type of the managed object. The class has two private member variables, ptr and refCount, which respectively point to the managed object and a reference count to manage shared ownership.
+
+The constructor of the class takes a raw pointer to the managed object and initializes the reference count to 1. The copy constructor and copy assignment operator increment the reference count and copy the pointer to the managed object when a new shared pointer is created from an existing one. The destructor decrements the reference count and deletes the managed object when the last shared pointer goes out of scope.
+
+Shared pointers are compatible with the standard C++ library algorithms and containers. But Shared pointers are not suitable for managing certain types of resources, such as file handles or network connections, which require specialized management. Also Shared pointers are not thread-safe by default. If multiple threads access the same shared pointer simultaneously, there is a risk of a data race or other concurrency-related issues.
