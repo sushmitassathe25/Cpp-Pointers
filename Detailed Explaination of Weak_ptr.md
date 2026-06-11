@@ -1,6 +1,6 @@
-# My Own version of weak_ptr implementation
+# Weak_ptr in detail with Example and Implementation
 
-Here's an example implementation of a simple weak pointer class in C++:
+Here's an example implementation of a weak pointer class in C++:
 
 ```cpp
 #include <iostream>
