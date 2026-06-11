@@ -1,8 +1,8 @@
 # Weak Pointers
 
-A **Weak Pointer** (`std::weak_ptr`) is a smart pointer that holds a non-owning reference to an object managed by `std::shared_ptr`. Unlike shared pointers, weak pointers do not participate in reference counting and do not prevent the object from being deleted.
+A **Weak Pointer** (`std::weak_ptr`) is a smart pointer that holds a non-owning reference to an object managed by `std::shared_ptr`. Unlike shared pointers, weak pointers do not participate in reference counting for ownership. This makes weak pointers ideal for breaking circular references.
 
-Weak pointers are primarily used to break circular references that can occur between shared pointers, which would otherwise lead to memory leaks. A weak pointer must be converted to a shared pointer (by calling `lock()`) before it can be used to access the object.
+Weak pointers are primarily used to break circular references that can occur between shared pointers, which would otherwise lead to memory leaks. A weak pointer must be converted to a shared pointer (via `.lock()`) before it can be used to access the managed object.
 
 **Key Characteristics:**
 - **Non-Owning Reference**: Does NOT increment the reference count
@@ -58,12 +58,12 @@ graph TD
     A["weak_ptr created"] --> B["Observes shared_ptr<br/>No ownership"]
     B --> C["Object still owned<br/>by shared_ptr"]
     C --> D{"Try to use<br/>weak_ptr?"}
-    D -->|Call lock()| E["Conversion to<br/>shared_ptr"]
+    D -->|lock method| E["Conversion to<br/>shared_ptr"]
     E --> F{"Conversion<br/>successful?"}
     F -->|Yes| G["Access the object"]
     F -->|No| H["Returns nullptr<br/>shared_ptr"]
-    D -->|shared_ptr destroyed| I["weak_ptr becomes<br/>invalid"]
-    I --> J["lock() returns<br/>empty shared_ptr"]
+    D -->|destroyed| I["weak_ptr becomes<br/>invalid"]
+    I --> J["lock returns<br/>empty shared_ptr"]
 ```
 
 ---
@@ -74,9 +74,9 @@ graph TD
 graph LR
     A["Step 1: Create shared_ptr ptr1<br/>Ref Count: 1<br/>Weak Count: 0"] -->|weak_ptr wptr = ptr1| B["Step 2: Create weak_ptr wptr<br/>Ref Count: 1<br/>Weak Count: 1"]
     B -->|shared_ptr ptr2 = ptr1| C["Step 3: Create shared_ptr ptr2<br/>Ref Count: 2<br/>Weak Count: 1"]
-    C -->|ptr2.reset()| D["Step 4: ptr2 released<br/>Ref Count: 1<br/>Weak Count: 1"]
-    D -->|ptr1.reset()| E["Step 5: ptr1 released<br/>Ref Count: 0<br/>Object DELETED<br/>Weak Count: 1 (but invalid)"]
-    E -->|wptr.lock()| F["Step 6: Try lock()<br/>Returns empty shared_ptr<br/>Cannot access object"]
+    C -->|ptr2.reset| D["Step 4: ptr2 released<br/>Ref Count: 1<br/>Weak Count: 1"]
+    D -->|ptr1.reset| E["Step 5: ptr1 released<br/>Ref Count: 0<br/>Object DELETED<br/>Weak Count: 1"]
+    E -->|wptr.lock| F["Step 6: Try lock<br/>Returns empty shared_ptr<br/>Cannot access object"]
 ```
 
 ---
@@ -96,7 +96,7 @@ graph TD
         B1["Does NOT own resource"]
         B2["Does NOT increment ref count"]
         B3["Does NOT prevent deletion"]
-        B4["Must lock() to access"]
+        B4["Must lock to access"]
     end
 ```
 
@@ -300,17 +300,17 @@ int main() {
 
 ```mermaid
 graph TD
-    A["Weak Pointer Operations"] --> B["lock()"]
-    A --> C["use_count()"]
-    A --> D["expired()"]
-    A --> E["reset()"]
-    A --> F["get()"]
+    A["Weak Pointer Operations"] --> B["lock"]
+    A --> C["use_count"]
+    A --> D["expired"]
+    A --> E["reset"]
+    A --> F["get"]
     
     B --> B1["Converts to shared_ptr<br/>Returns empty if expired"]
     C --> C1["Returns ref count of<br/>the managed object"]
     D --> D1["Returns true if<br/>the object was deleted"]
     E --> E1["Releases the weak<br/>reference"]
-    F --> F1["Returns raw pointer<br/>Use with caution!"]
+    F --> F1["Returns raw pointer<br/>Use with caution"]
 ```
 
 ---
@@ -572,10 +572,10 @@ graph TD
     A --> D["Deleter"]
     A --> E["Allocator"]
     
-    F["shared_ptr<T>"] --> G["Pointer to object"]
+    F["shared_ptr T"] --> G["Pointer to object"]
     F --> H["Pointer to Control Block"]
     
-    I["weak_ptr<T>"] --> J["Pointer to Control Block"]
+    I["weak_ptr T"] --> J["Pointer to Control Block"]
     
     K["When object is deleted:"]
     K --> L["Object memory freed"]
@@ -590,10 +590,10 @@ graph TD
 |----------|-------------|
 | **Use for back-references** | In parent-child relationships, parent uses shared_ptr, child uses weak_ptr |
 | **Use in observer patterns** | Observers held as weak_ptr prevents circular references |
-| **Always lock() before use** | Never assume the object still exists; use lock() to safely convert |
+| **Always lock before use** | Never assume the object still exists; use lock() to safely convert |
 | **Check for expiration** | Use expired() or check if lock() returns nullptr |
-| **Avoid manual get()** | The raw pointer from get() becomes invalid when object is deleted |
-| **Prefer lock() over expired()** | lock() is more efficient if you plan to use the object |
+| **Avoid manual get** | The raw pointer from get() becomes invalid when object is deleted |
+| **Prefer lock over expired** | lock() is more efficient if you plan to use the object |
 | **Use in caches** | Weak pointers allow cached objects to be garbage collected |
 
 ---
@@ -629,21 +629,21 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph Raw["Raw Pointer (Dangerous)"]
+    subgraph Raw["Raw Pointer Dangerous"]
         A1["No ownership"]
         A2["No lifecycle tracking"]
         A3["Can dangle<br/>pointing to deleted memory"]
         A4["Manual management"]
     end
     
-    subgraph Shared["Shared Pointer (Safe but slow)"]
+    subgraph Shared["Shared Pointer Safe but slow"]
         B1["Shared ownership"]
         B2["Automatic deletion<br/>at ref count = 0"]
         B3["Reference counting overhead"]
         B4["Can create circular references"]
     end
     
-    subgraph Weak["Weak Pointer (Safe & Fast)"]
+    subgraph Weak["Weak Pointer Safe and Fast"]
         C1["Non-owning reference"]
         C2["No lifecycle impact"]
         C3["Must check before use"]
@@ -663,4 +663,4 @@ Weak pointers provide:
 - ✅ **Clear intent** that you don't own the resource
 - ✅ **Minimal overhead** - only stores a pointer to the control block
 
-**Key Rule:** Always call `lock()` before using a weak_ptr to safely convert it to a shared_ptr and ensure the object still exists. Use weak_ptr when you need to observe an object without taking ownership!
+**Key Rule:** Always call `lock()` before using a weak_ptr to safely convert it to a shared_ptr and ensure the object still exists. Use weak_ptr when you need to observe an object without taking ownership.
