@@ -21,7 +21,7 @@ Smart pointers are objects that act like pointers but provide automatic memory m
 
 ### Unique Pointer
 
-**File:** [unique_pointer.md](./unique_pointer.md)
+**File:** [unique_pointer.md](./https://github.com/sushmitassathe25/Cpp-Advanced/blob/main/Unique%20pointers.md)
 
 `std::unique_ptr` is a smart pointer that exclusively owns and manages memory. Key features:
 
