@@ -1,7 +1,5 @@
 # Pointers
 
-## What is a C++ Pointer?
-
 A pointer is a variable that stores the memory address of another variable. Pointers allow you to dynamically manage memory, create complex data structures, and pass variables by reference to functions.
 
 ## Table of Contents
